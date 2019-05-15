@@ -1,0 +1,30 @@
+{
+	"name": "bckp/translator-nette",
+	"description": "Nette extension for bckp/translator-core",
+	"keywords": ["translator", "nette"],
+	"homepage": "https://github.com/bckp/translator-nette",
+	"authors": [
+		{
+			"name": "Radovan Kepák",
+			"homepage": "https://kepak.eu"
+		}
+	],
+	"require": {
+		"php": ">=7.1.0",
+		"bckp/translator-core": "^1.0",
+		"nette/di": "^3.0",
+		"nette/http": "^3.0",
+		"nette/application": "^3.0"
+	},
+	"suggest": {
+		"tracy/tracy": "For panel support"
+	},
+	"autoload": {
+		"classmap": ["src/"]
+	},
+	"require-dev": {
+		"phpstan/phpstan-shim": "^0.11",
+		"tracy/tracy": "^2.6",
+		"nette/tester": "^2.2"
+	}
+}
