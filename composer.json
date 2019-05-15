@@ -3,6 +3,7 @@
 	"description": "Nette extension for bckp/translator-core",
 	"keywords": ["translator", "nette"],
 	"homepage": "https://github.com/bckp/translator-nette",
+	"license": "BSD-3-Clause",
 	"authors": [
 		{
 			"name": "Radovan Kepák",
