@@ -12,6 +12,7 @@
 namespace Bckp\Translator\Nette;
 
 use Nette\Localization\ITranslator;
+use Nette\Utils\Html;
 
 /**
  * Class Translator
@@ -40,6 +41,8 @@ class Translator implements ITranslator {
 	 * @return string
 	 */
 	function translate($message, ...$parameters): string {
+		if($message instanceof Html)
+			return (string) $message;
 		return $this->translator->translate($message, ...$parameters);
 	}
 }
