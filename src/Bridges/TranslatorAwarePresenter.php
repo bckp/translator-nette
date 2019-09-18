@@ -39,10 +39,8 @@ trait TranslatorAwarePresenter {
 		$this->onStartup[] = function () use ($provider) {
 			$this->translator = $provider->getTranslator($this->lang);
 		};
-		/* nette/application#219
 		$this->onRender[] = function () {
 			$this->template->setTranslator($this->translator);
 		};
-		*/
 	}
 }
