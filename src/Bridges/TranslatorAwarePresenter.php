@@ -19,6 +19,7 @@ use Nette\Localization\ITranslator;
  *
  * @package Bckp\Translator\Nette\Bridges
  * @property array $onStartup
+ * @property array $onRender
  * @property array $onBeforeRender
  * @property-read ITemplate $template
  */

@@ -4,6 +4,7 @@ Bckp\Translator
 [![Downloads this Month](https://img.shields.io/packagist/dm/bckp/translator-nette.svg)](https://packagist.org/packages/bckp/translator-nette)
 [![Build Status](https://travis-ci.org/bckp/translator-nette.svg?branch=master)](https://travis-ci.org/bckp/translator-nette)
 [![Coverage Status](https://coveralls.io/repos/github/bckp/translator-nette/badge.svg?branch=master)](https://coveralls.io/github/bckp/translator-nette?branch=master)
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/bckp/translator-nette/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/bckp/translator-nette/?branch=master)
 [![Latest Stable Version](https://poser.pugx.org/bckp/translator-nette/v/stable)](https://packagist.org/packages/bckp/translator-nette)
 [![License](https://img.shields.io/badge/license-New%20BSD-blue.svg)](https://github.com/nette/application/blob/master/license.md)
 
@@ -41,12 +42,28 @@ Translator will find all files in path and make map to the DI. If debugger is on
 Naming convention
 -----
 
-All language files should be in Neon format, and proper naming is: <module>.<langCode>.neon
+All language files should be in Neon format, and proper naming is: {module}.{langCode}.neon
+
+Translation file format
+-----------------------
+
+Translation files are written in NEON format. Plural strings are in ARRAY, otherwise STRING.
+```neon
+welcome: 'Vítejte'
+withArgs: 'Ahoj, já jsem %s, přeji krásné %s'
+withArgsRev: 'Krásné %2$s, já jsem %1$s'
+plural:
+	zero: 'žádný člověk'
+	one: 'jeden člověk'
+	few: '%d lidé'
+	other: '%d lidí'
+next: 'This is next translation'
+```
 
 Translatings
 -----
 
-Translator will auto-register into all presnters, that uses TranslatorAwareTrait, during onStartup part. If you want to use them in templates, you must push them into latte by yourself (as onRender is not yet implemented in nette), and onStartup is bad place to create template
+Translator will auto-register into all presenters, that uses TranslatorAwareTrait, during onStartup part, and even auto-register into templates during onRender part.
 ```php
 <?php
 class Presenter extends Nette\Application\UI\Presenter {
@@ -54,4 +71,41 @@ class Presenter extends Nette\Application\UI\Presenter {
 }
 ```
 
+Translating in Presenters
+-------------------------
 
+```php
+	$changes = $this->model->doSomeChanges();
+	$this->flashMessage($this->translator->translate(['messages.flash.success', $changes], $changes));
+	
+	$form->addError($this->translator->translate('messages.error.form.empty'));
+```
+
+If you want do shortcut, you can define own translate method, like this
+```php
+class Presenter extends Nette\Application\UI\Presenter {
+	use TranslatorAwarePresenter; // this comes with translator extension
+
+	public function translate($message, ...$params){
+		$this->translator->translate($message, ...$params);
+	}
+
+	public function renderTest(){
+		$message = $this->translate('messages.test');
+	}
+}
+```
+
+Translating in Templates
+------------------------
+
+In template, you can use normal Latte way, so translating is super easy
+```html
+	<div>{_'messages.test'}</div>
+```
+
+Every parameter you pass to the translate will be passed into sprintf in Bckp\Translator internally, so you can add order in neon translation format.
+
+See (https://doc.nette.org/en/3.0/localization) for more informations about how to translate
+
+See (https://github.com/bckp/translator-core) for more informations about Bckp\Translate-core

@@ -40,7 +40,7 @@ final class CompatibilityTranslator implements ITranslator {
 	 * @return string
 	 */
 	public function translate($message, ...$parameters): string {
-		if (!$parameters)
+		if (empty($parameters))
 			return $this->translator->translate($message);
 
 		if (is_array($parameters[0]))
