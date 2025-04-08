@@ -7,25 +7,28 @@
 	"authors": [
 		{
 			"name": "Radovan Kepák",
-			"homepage": "https://kepak.eu"
+			"homepage": "https://kepak.dev"
 		}
 	],
 	"require": {
-		"php": ">=7.1.0",
-		"bckp/translator-core": "^1.0.1",
-		"nette/di": "^3.0",
-		"nette/http": "^3.0",
-		"nette/application": "^3.0.1"
+		"php": "^8.2",
+		"bckp/translator-core": "v2.0.0-rc1",
+		"nette/di": "^3.2",
+		"nette/http": "^3.2",
+		"nette/application": "^3.2"
 	},
 	"suggest": {
-		"tracy/tracy": "For panel support"
+		"tracy/tracy": "For panel support",
+		"latte/latte": "For Latte support"
 	},
 	"autoload": {
 		"classmap": ["src/"]
 	},
 	"require-dev": {
-		"phpstan/phpstan-shim": "^0.11",
-		"tracy/tracy": "^2.6",
-		"nette/tester": "^2.2"
+		"roave/security-advisories": "dev-latest",
+		"phpstan/phpstan": "^2.0",
+		"tracy/tracy": "^2.9",
+		"latte/latte": "^3.0",
+		"nette/tester": "^2.5"
 	}
 }

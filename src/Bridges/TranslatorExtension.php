@@ -56,11 +56,12 @@ class TranslatorExtension extends CompilerExtension {
 		$this->debugMode = $debugMode;
 
 		// Create temp directory
-		if (!is_dir($this->tempDir)) {
-			@mkdir($this->tempDir, 0777, true);
-			if (!is_dir($this->tempDir))
-				throw new PathInvalidException("Failed to create temp dir on path '{$this->tempDir}'.");
-		}
+		if (!is_dir($this->tempDir) && !mkdir($concurrentDirectory = $this->tempDir, 0777, true)
+		    && !is_dir(
+				$concurrentDirectory
+			)) {
+				throw new \RuntimeException(sprintf('Directory "%s" was not created', $concurrentDirectory));
+			}
 	}
 
 	/**
