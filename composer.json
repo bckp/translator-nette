@@ -24,11 +24,19 @@
 	"autoload": {
 		"classmap": ["src/"]
 	},
+	"scripts": {
+		"phpstan": "phpstan analyse",
+		"psalm": "psalm",
+		"phpcs": "PHP_CS_FIXER_IGNORE_ENV=1 php-cs-fixer check",
+		"phpcs-fix": "PHP_CS_FIXER_IGNORE_ENV=1 php-cs-fixer fix"
+	},
 	"require-dev": {
 		"roave/security-advisories": "dev-latest",
 		"phpstan/phpstan": "^2.0",
 		"tracy/tracy": "^2.9",
 		"latte/latte": "^3.0",
-		"nette/tester": "^2.5"
+		"nette/tester": "^2.5",
+		"friendsofphp/php-cs-fixer": "^3.75",
+		"vimeo/psalm": "^6.5"
 	}
 }

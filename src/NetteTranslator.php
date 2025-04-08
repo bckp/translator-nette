@@ -25,8 +25,7 @@ class NetteTranslator implements Localization\Translator
 	public function __construct(
 		private readonly TranslatorProvider $translatorProvider,
 		private readonly LocaleProvider $localeProvider,
-	) {
-	}
+	) {}
 
 	/**
 	 * @api
@@ -44,7 +43,8 @@ class NetteTranslator implements Localization\Translator
 		return $this->getTranslator()->translate($message, ...$parameters);
 	}
 
-	private function getTranslator(): Translator {
+	private function getTranslator(): Translator
+	{
 		return $this->translator ??= $this->translatorProvider->getTranslator($this->getLocale());
 	}
 }

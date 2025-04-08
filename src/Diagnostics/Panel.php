@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /**
  * Nette extension for bckp/translator
  * (c) Radovan Kepák
@@ -21,14 +23,16 @@ use Tracy\IBarPanel;
  *
  * @package Bckp\Translator\Nette\Diagnostics
  */
-class Panel extends Diagnostics implements IDiagnostics, IBarPanel {
-
+class Panel extends Diagnostics implements IDiagnostics, IBarPanel
+{
 	/**
 	 * Panel constructor.
 	 */
-	public function __construct() {
-		if (class_exists(Debugger::class))
+	public function __construct()
+	{
+		if (class_exists(Debugger::class)) {
 			Debugger::getBar()->addPanel($this, 'bckp.localization');
+		}
 	}
 
 	/**
@@ -36,7 +40,8 @@ class Panel extends Diagnostics implements IDiagnostics, IBarPanel {
 	 *
 	 * @return string
 	 */
-	public function getTab(): string {
+	public function getTab(): string
+	{
 		$errors = count($this->getWarnings());
 		$untranslated = count($this->getUntranslated());
 
@@ -48,7 +53,8 @@ class Panel extends Diagnostics implements IDiagnostics, IBarPanel {
 	 *
 	 * @return string
 	 */
-	public function getPanel(): string {
+	public function getPanel(): string
+	{
 		$return = $e = $u = '';
 		$h = 'htmlSpecialChars';
 
@@ -60,10 +66,18 @@ class Panel extends Diagnostics implements IDiagnostics, IBarPanel {
 			$u .= '<tr><td>' . $h($message) . '</td></tr>';
 		}
 
-		if ($e || $u) $return = '<h1>' . strtoupper($this->getLocale()) . ' language</h1><div class="nette-inner bckp-translation">';
-		if ($e) $return .= '<h2>Errors: ' . count($unique) . '</h2><table class="tracy-sortable">' . $e . '</table>';
-		if ($u) $return .= '<h2>Missing: ' . count($untranslated) . '</h2><table class="tracy-sortable">' . $u . '</table>';
-		if ($e || $u) $return .= '</div>';
+		if ($e || $u) {
+			$return = '<h1>' . strtoupper($this->getLocale()) . ' language</h1><div class="nette-inner bckp-translation">';
+		}
+		if ($e) {
+			$return .= '<h2>Errors: ' . count($unique) . '</h2><table class="tracy-sortable">' . $e . '</table>';
+		}
+		if ($u) {
+			$return .= '<h2>Missing: ' . count($untranslated) . '</h2><table class="tracy-sortable">' . $u . '</table>';
+		}
+		if ($e || $u) {
+			$return .= '</div>';
+		}
 		return $return;
 	}
 
@@ -71,11 +85,14 @@ class Panel extends Diagnostics implements IDiagnostics, IBarPanel {
 	 * @param int $errors
 	 * @return string
 	 */
-	protected function getErrors(int $errors = 0): string {
-		if (!$errors)
+	protected function getErrors(int $errors = 0): string
+	{
+		if (!$errors) {
 			return '';
-		if ($errors === 1)
+		}
+		if ($errors === 1) {
 			return '1 error';
+		}
 		return $errors . ' errors';
 	}
 }

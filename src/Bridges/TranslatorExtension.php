@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /**
  * Nette extension for bckp/translator
  * (c) Radovan Kepák
@@ -27,7 +29,8 @@ use Nette\Utils\Finder;
  * @package Bckp\Translator\Nette\Bridges
  * @property-read \stdClass $config
  */
-class TranslatorExtension extends CompilerExtension {
+class TranslatorExtension extends CompilerExtension
+{
 	/**
 	 * @var string
 	 */
@@ -50,24 +53,26 @@ class TranslatorExtension extends CompilerExtension {
 	 * @param array|null $scanDirs
 	 * @param bool|null $debugMode
 	 */
-	public function __construct(string $tempDir, array $scanDirs = null, bool $debugMode = null) {
+	public function __construct(string $tempDir, array $scanDirs = null, bool $debugMode = null)
+	{
 		$this->tempDir = $tempDir;
 		$this->scanDirs = $scanDirs;
 		$this->debugMode = $debugMode;
 
 		// Create temp directory
-		if (!is_dir($this->tempDir) && !mkdir($concurrentDirectory = $this->tempDir, 0777, true)
-		    && !is_dir(
+		if (!is_dir($this->tempDir) && !mkdir($concurrentDirectory = $this->tempDir, 0o777, true)
+			&& !is_dir(
 				$concurrentDirectory
 			)) {
-				throw new \RuntimeException(sprintf('Directory "%s" was not created', $concurrentDirectory));
-			}
+			throw new \RuntimeException(sprintf('Directory "%s" was not created', $concurrentDirectory));
+		}
 	}
 
 	/**
 	 * @return Nette\Schema\Schema
 	 */
-	public function getConfigSchema(): Nette\Schema\Schema {
+	public function getConfigSchema(): Nette\Schema\Schema
+	{
 		return Nette\Schema\Expect::structure([
 			'path' => Nette\Schema\Expect::arrayOf('string')->default($this->scanDirs),
 			'debugger' => Nette\Schema\Expect::bool()->default($this->debugMode),
@@ -80,18 +85,21 @@ class TranslatorExtension extends CompilerExtension {
 	/**
 	 * Load configuration
 	 */
-	public function loadConfiguration() {
+	public function loadConfiguration()
+	{
 		$config = $this->config;
-		$plural = new PluralProvider;
+		$plural = new PluralProvider();
 		$builder = $this->getContainerBuilder();
 
 		// Panel if in debug
-		if ($config->debugger)
+		if ($config->debugger) {
 			$builder->addDefinition($this->prefix('diagnostics'))->setFactory(Panel::class);
+		}
 
 		// Resolver if configured
-		if ($config->resolver)
+		if ($config->resolver) {
 			$builder->addDefinition($this->prefix('languageResolver'))->setFactory(LangResolver::class, [$config->languages]);
+		}
 
 		// Provider
 		$builder->addDefinition($this->prefix('translatorProvider'))->setFactory(TranslatorProvider::class, [$config->languages, $config->prototype]);
@@ -110,11 +118,13 @@ class TranslatorExtension extends CompilerExtension {
 	 * @param array $languages
 	 * @return array
 	 */
-	protected function uniqueLanguages(array $languages): array {
+	protected function uniqueLanguages(array $languages): array
+	{
 		return array_unique(array_map('strtolower', $languages));
 	}
 
-	public function beforeCompile() {
+	public function beforeCompile()
+	{
 		$config = $this->config;
 		$builder = $this->getContainerBuilder();
 
@@ -125,12 +135,14 @@ class TranslatorExtension extends CompilerExtension {
 			$catalogue = $builder->getDefinition($this->prefix($locale . 'Catalogue'));
 
 			// Enable debug mode for catalogue
-			if ($config->debugger)
+			if ($config->debugger) {
 				$catalogue->addSetup('setDebugMode', [true]);
+			}
 
 			// Add resource files
-			foreach ($this->getCatalogueResources($locale) as $file)
+			foreach ($this->getCatalogueResources($locale) as $file) {
 				$catalogue->addSetup('addFile', [$file->getPathname()]);
+			}
 
 			// Add catalogue to provider
 			$provider->addSetup('addCatalogue', [$locale, $catalogue]);
@@ -144,7 +156,8 @@ class TranslatorExtension extends CompilerExtension {
 		}
 	}
 
-	protected function getCatalogueResources(string $locale): array {
+	protected function getCatalogueResources(string $locale): array
+	{
 		$return = [];
 		foreach (Finder::findFiles('*.' . strtolower($locale) . '.neon')->from(...$this->config->path) as $file) {
 			$return[] = $file;

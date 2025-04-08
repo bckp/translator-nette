@@ -18,9 +18,11 @@ use Bckp\Translator\CatalogueBuilder;
 use Bckp\Translator\Exceptions\TranslatorException;
 use Bckp\Translator\Interfaces\Diagnostics;
 use Bckp\Translator\Translator;
+
 use function array_key_exists;
 
-final class TranslatorProvider {
+final class TranslatorProvider
+{
 	/**
 	 * @var array<string, CatalogueBuilder>
 	 */
@@ -33,13 +35,13 @@ final class TranslatorProvider {
 
 	public function __construct(
 		private readonly Diagnostics $diagnostics,
-	) {
-	}
+	) {}
 
 	/**
 	 * @api
 	 */
-	public function addCatalogueBuilder(CatalogueBuilder $builder): void {
+	public function addCatalogueBuilder(CatalogueBuilder $builder): void
+	{
 		$this->builder[$builder->getLocale()] = $builder;
 	}
 
@@ -47,7 +49,8 @@ final class TranslatorProvider {
 	 * @api
 	 * @throws TranslatorException
 	 */
-	public function getCatalogue(string $locale): Translator {
+	public function getCatalogue(string $locale): Translator
+	{
 		$locale = $this->normalizeLocale($locale);
 
 		if (!array_key_exists($locale, $this->builder)) {
@@ -57,8 +60,8 @@ final class TranslatorProvider {
 		return $this->translator[$locale] ??= new Translator($this->builder[$locale]->compile(), $this->diagnostics);
 	}
 
-	private function normalizeLocale(string $locale): string {
+	private function normalizeLocale(string $locale): string
+	{
 		return strtolower($locale);
 	}
 }
-
