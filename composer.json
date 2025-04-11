@@ -16,7 +16,7 @@
 		"nette/di": "^3.2",
 		"nette/http": "^3.2",
 		"nette/application": "^3.2",
-		"nette/finder": "^2.4 || ^3.0"
+		"nette/finder": "^3.0"
 	},
 	"suggest": {
 		"tracy/tracy": "For panel support",
