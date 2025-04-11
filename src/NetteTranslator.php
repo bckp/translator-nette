@@ -15,13 +15,13 @@ declare(strict_types=1);
 namespace Bckp\Translator\Nette;
 
 use Bckp\Translator\Translator;
-use Bckp\Translator\TranslatorProvider;
 use Nette\Localization;
 
 class NetteTranslator implements Localization\Translator
 {
 	private Translator $translator;
 
+	/** @api */
 	public function __construct(
 		private readonly TranslatorProvider $translatorProvider,
 		private readonly LocaleProvider $localeProvider,
@@ -38,13 +38,15 @@ class NetteTranslator implements Localization\Translator
 	/**
 	 * @api
 	 */
-	public function translate(\Stringable|string $message, ...$parameters): string|\Stringable
+	#[\Override]
+	public function translate(\Stringable|string $message, mixed ...$parameters): string
 	{
 		return $this->getTranslator()->translate($message, ...$parameters);
 	}
 
 	private function getTranslator(): Translator
 	{
+		/** @psalm-suppress RedundantPropertyInitializationCheck */
 		return $this->translator ??= $this->translatorProvider->getTranslator($this->getLocale());
 	}
 }

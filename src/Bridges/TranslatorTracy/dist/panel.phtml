@@ -1,0 +1,61 @@
+<?php
+declare(strict_types=1);
+
+use Tracy\Helpers;
+use Tracy\Dumper;
+?>
+
+<h1>Translator</h1>
+<div class='tracy-inner-container'>
+	<p><code>locale: <?= $locale ?>    allowed: <?= implode(',', $languages) ?></code></p>
+</div>
+<div class="tracy-inner">
+	<?php if($resolvers): ?>
+		<h2>Resolvers</h2>
+		<div class="tracy-inner">
+			<table>
+				<tr>
+					<th>Resolver</th>
+					<th>Result</th>
+				</tr>
+				<?php
+				foreach ($resolvers as $v): ?>
+					<tr>
+						<td><?= Helpers::escapeHtml($v::class) ?></td>
+						<td><?= Dumper::toHtml($v->resolve($languages)) ?></td>
+					</tr>
+				<?php endforeach; ?>
+			</table>
+		</div>
+	<?php endif; ?>
+
+	<?php if($hasErrors): ?>
+		<h2>Errors: <?= $countErrors ?></h2>
+		<div class="tracy-inner">
+			<table class="tracy-sortable">
+				<tr><th>String</th></tr>
+				<?php
+				foreach ($errors as $v): ?>
+					<tr>
+						<td><?= Helpers::escapeHtml($v) ?></td>
+					</tr>
+				<?php endforeach; ?>
+			</table>
+		</div>
+	<?php endif; ?>
+
+	<?php if($hasUntranslated): ?>
+		<h2>Untranslated: <?= $countUntranslated ?></h2>
+		<div class="tracy-inner">
+			<table class="tracy-sortable">
+				<tr><th>String</th></tr>
+				<?php
+				foreach ($untranslated as $v): ?>
+					<tr>
+						<td><?= Helpers::escapeHtml($v) ?></td>
+					</tr>
+				<?php endforeach; ?>
+			</table>
+		</div>
+	<?php endif; ?>
+</div>

@@ -25,6 +25,10 @@ final class LocaleProvider
 
 	private string $locale;
 
+	/**
+	 * @param string[] $allowed
+	 * @api
+	 */
 	public function __construct(
 		public readonly array $allowed,
 		Resolver ...$resolvers
@@ -37,6 +41,7 @@ final class LocaleProvider
 	 */
 	public function resolve(): string
 	{
+		/** @psalm-suppress RedundantPropertyInitializationCheck */
 		return $this->locale ??= $this->getLocale();
 	}
 

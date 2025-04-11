@@ -12,10 +12,11 @@
 	],
 	"require": {
 		"php": "^8.2",
-		"bckp/translator-core": "v2.0.0-rc1",
+		"bckp/translator-core": "v2.0.0-rc2",
 		"nette/di": "^3.2",
 		"nette/http": "^3.2",
-		"nette/application": "^3.2"
+		"nette/application": "^3.2",
+		"nette/finder": "^3.2"
 	},
 	"suggest": {
 		"tracy/tracy": "For panel support",

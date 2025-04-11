@@ -18,6 +18,7 @@ use Bckp\Translator\CatalogueBuilder;
 use Bckp\Translator\Exceptions\TranslatorException;
 use Bckp\Translator\Interfaces\Diagnostics;
 use Bckp\Translator\Translator;
+use Tracy\Bar;
 
 use function array_key_exists;
 
@@ -33,8 +34,9 @@ final class TranslatorProvider
 	 */
 	private array $translator = [];
 
+	/** @api */
 	public function __construct(
-		private readonly Diagnostics $diagnostics,
+		private readonly ?Diagnostics $diagnostics,
 	) {}
 
 	/**
@@ -49,7 +51,7 @@ final class TranslatorProvider
 	 * @api
 	 * @throws TranslatorException
 	 */
-	public function getCatalogue(string $locale): Translator
+	public function getTranslator(string $locale): Translator
 	{
 		$locale = $this->normalizeLocale($locale);
 

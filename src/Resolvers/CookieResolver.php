@@ -1,23 +1,36 @@
 <?php
 
 declare(strict_types=1);
+/**
+ * Nette extension for bckp/translator
+ * (c) Radovan Kepák
+ *
+ * For the full copyright and license information, please view the file license.md that was distributed with this source code.
+ *
+ * @author Radovan Kepak <radovan@kepak.dev>
+ *  --------------------------------------------------------------------------
+ */
 
 namespace Bckp\Translator\Nette\Resolvers;
 
 use Nette\Http\Request;
 use Nette\Http\Response;
 
-class CookieResolver
+/**
+ * @api
+ */
+readonly class CookieResolver implements Resolver
 {
 	public function __construct(
-		protected readonly string $parameterName,
-		protected readonly Request $httpRequest,
-		protected readonly Response $httpResponse,
+		protected string $parameterName,
+		protected Request $httpRequest,
+		protected Response $httpResponse,
 	) {}
 
 	/**
 	 * @param string[] $allowed
 	 */
+	#[\Override]
 	public function resolve(array $allowed): ?string
 	{
 		return $this->httpRequest->getCookie($this->parameterName);
