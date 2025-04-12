@@ -15,6 +15,7 @@ namespace Bckp\Translator\Nette\Resolvers;
 
 use Nette\Http\Request;
 use Nette\Http\Response;
+use Throwable;
 
 /**
  * @api
@@ -45,7 +46,7 @@ readonly class CookieResolver implements Resolver
 				null,
 			);
 			return true;
-		} catch (\Throwable) {
+		} catch (Throwable) {
 			return false;
 		}
 	}

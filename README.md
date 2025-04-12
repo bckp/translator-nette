@@ -3,7 +3,7 @@ Bckp\Translator
 
 [![Downloads this Month](https://img.shields.io/packagist/dm/bckp/translator-nette.svg)](https://packagist.org/packages/bckp/translator-nette)
 [![Tests](https://github.com/bckp/translator-nette/actions/workflows/tests.yaml/badge.svg)](https://github.com/bckp/translator-nette/actions/workflows/tests.yaml)
-#[![Coverage Status](https://coveralls.io/repos/github/bckp/translator-nette/badge.svg?branch=main)](https://coveralls.io/github/bckp/translator-nette?branch=main)
+[![Coverage Status](https://coveralls.io/repos/github/bckp/translator-nette/badge.svg?branch=main)](https://coveralls.io/github/bckp/translator-nette?branch=main)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/bckp/translator-nette/badges/quality-score.png?b=main)](https://scrutinizer-ci.com/g/bckp/translator-nette/?branch=main)
 [![Latest Stable Version](https://poser.pugx.org/bckp/translator-nette/v/stable)](https://packagist.org/packages/bckp/translator-nette)
 [![License](https://img.shields.io/badge/license-New%20BSD-blue.svg)](https://github.com/nette/application/blob/master/license.md)
