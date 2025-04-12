@@ -2,9 +2,9 @@ Bckp\Translator
 ====================
 
 [![Downloads this Month](https://img.shields.io/packagist/dm/bckp/translator-nette.svg)](https://packagist.org/packages/bckp/translator-nette)
-[![Build Status](https://travis-ci.org/bckp/translator-nette.svg?branch=master)](https://travis-ci.org/bckp/translator-nette)
-[![Coverage Status](https://coveralls.io/repos/github/bckp/translator-nette/badge.svg?branch=master)](https://coveralls.io/github/bckp/translator-nette?branch=master)
-[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/bckp/translator-nette/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/bckp/translator-nette/?branch=master)
+[![Tests](https://github.com/bckp/translator-nette/actions/workflows/tests.yaml/badge.svg)](https://github.com/bckp/translator-nette/actions/workflows/tests.yaml)
+#[![Coverage Status](https://coveralls.io/repos/github/bckp/translator-nette/badge.svg?branch=main)](https://coveralls.io/github/bckp/translator-nette?branch=main)
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/bckp/translator-nette/badges/quality-score.png?b=main)](https://scrutinizer-ci.com/g/bckp/translator-nette/?branch=main)
 [![Latest Stable Version](https://poser.pugx.org/bckp/translator-nette/v/stable)](https://packagist.org/packages/bckp/translator-nette)
 [![License](https://img.shields.io/badge/license-New%20BSD-blue.svg)](https://github.com/nette/application/blob/master/license.md)
 
@@ -33,8 +33,11 @@ translator:
 		- cs #Language codes
 	path:
 		- %appDir%/Locale # Where to search for language file
-	resolver: true # Use resolver to get proper language?
-	debugger: %debugMode%
+	pluralProvider: Bckp\Translator\PluralProvider # Optional - default is PluralProvider from bckp/translator-core
+	debugger: %debugMode% # Optional - default is %debugMode%
+	injectLatte: true # Optional - default is true, this will autoregister translator into latte
+	resolvers:
+	    - Bckp\Translator\Nette\Resolvers\HeaderResolver() # Any class implements Resolver, will be used to resolve language, if more then one used, extension will cyclu thru all of them to find first that can be used
 ```
 
 Translator will find all files in path and make map to the DI. If debugger is on, it will on each request check, if any file is modified and rebuild all language file (only needed ones).
@@ -63,11 +66,15 @@ next: 'This is next translation'
 Translatings
 -----
 
-Translator will auto-register into all presenters, that uses TranslatorAwareTrait, during onStartup part, and even auto-register into templates during onRender part.
+For translator to be in Presenter, simply inject it or get in in constructor
+
 ```php
 <?php
+use Nette\DI\Attributes\Inject;
+
 class Presenter extends Nette\Application\UI\Presenter {
-	use TranslatorAwarePresenter; // this comes with translator extension
+    #[Inject]
+	public Nette\Localization\Translator $translator;
 }
 ```
 
@@ -76,7 +83,7 @@ Translating in Presenters
 
 ```php
 	$changes = $this->model->doSomeChanges();
-	$this->flashMessage($this->translator->translate(['messages.flash.success', $changes], $changes));
+	$this->flashMessage($this->translator->translate('messages.flash.success', $changes));
 	
 	$form->addError($this->translator->translate('messages.error.form.empty'));
 ```
@@ -84,7 +91,8 @@ Translating in Presenters
 If you want do shortcut, you can define own translate method, like this
 ```php
 class Presenter extends Nette\Application\UI\Presenter {
-	use TranslatorAwarePresenter; // this comes with translator extension
+	#[Inject]
+	public Nette\Localization\Translator $translator;
 
 	public function translate($message, ...$params){
 		$this->translator->translate($message, ...$params);
@@ -99,13 +107,14 @@ class Presenter extends Nette\Application\UI\Presenter {
 Translating in Templates
 ------------------------
 
-In template, you can use normal Latte way, so translating is super easy
+If you set injectLatte to true, translator will autoregister itself to Latte, so you can use it in templates
+
 ```html
 	<div>{_'messages.test'}</div>
 ```
 
 Every parameter you pass to the translate will be passed into sprintf in Bckp\Translator internally, so you can add order in neon translation format.
 
-See (https://doc.nette.org/en/3.0/localization) for more informations about how to translate
+See (https://doc.nette.org/en/4.0/localization) for more informations about how to translate
 
 See (https://github.com/bckp/translator-core) for more informations about Bckp\Translate-core
