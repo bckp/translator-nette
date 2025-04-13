@@ -37,7 +37,7 @@ translator:
 	debugger: %debugMode% # Optional - default is %debugMode%
 	injectLatte: true # Optional - default is true, this will autoregister translator into latte
 	resolvers:
-	    - Bckp\Translator\Nette\Resolvers\HeaderResolver() # Any class implements Resolver, will be used to resolve language, if more then one used, extension will cyclu thru all of them to find first that can be used
+	    - Bckp\Translator\Nette\Resolvers\HeaderLocaleResolver() # Any class implements Resolver, will be used to resolve language, if more then one used, extension will cyclu thru all of them to find first that can be used
 ```
 
 Translator will find all files in path and make map to the DI. If debugger is on, it will on each request check, if any file is modified and rebuild all language file (only needed ones).
@@ -115,6 +115,6 @@ If you set injectLatte to true, translator will autoregister itself to Latte, so
 
 Every parameter you pass to the translate will be passed into sprintf in Bckp\Translator internally, so you can add order in neon translation format.
 
-See (https://doc.nette.org/en/4.0/localization) for more informations about how to translate
+See (https://latte.nette.org/en/tags#toc-translation) for more informations about how to translate
 
 See (https://github.com/bckp/translator-core) for more informations about Bckp\Translate-core
