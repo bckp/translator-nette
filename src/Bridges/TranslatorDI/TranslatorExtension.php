@@ -18,7 +18,7 @@ use Bckp\Translator\CatalogueBuilder;
 use Bckp\Translator\Nette\Diagnostics\TranslatorPanel;
 use Bckp\Translator\Nette\LocaleProvider;
 use Bckp\Translator\Nette\NetteTranslator;
-use Bckp\Translator\Nette\Resolvers\Resolver;
+use Bckp\Translator\Nette\Resolvers\LocaleResolver;
 use Bckp\Translator\Nette\TranslatorProvider;
 use Bckp\Translator\PluralProvider;
 use Latte\Essential\TranslatorExtension as LatteTranslatorExtension;
@@ -31,6 +31,7 @@ use Nette\Localization\Translator;
 use Nette\Schema\Context;
 use Nette\Schema\Expect;
 use Nette\Schema\Schema;
+use Nette\Utils\FileSystem;
 use Nette\Utils\Finder;
 
 /**

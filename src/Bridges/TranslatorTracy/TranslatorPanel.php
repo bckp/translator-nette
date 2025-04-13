@@ -15,7 +15,7 @@ declare(strict_types=1);
 namespace Bckp\Translator\Nette\Diagnostics;
 
 use Bckp\Translator\Diagnostics\Diagnostics;
-use Bckp\Translator\Nette\Resolvers\Resolver;
+use Bckp\Translator\Nette\Resolvers\LocaleResolver;
 use Psalm\Issue\UnusedVariable;
 use Tracy\IBarPanel;
 use Nette\Utils\Helpers;
@@ -25,7 +25,7 @@ use function strtoupper;
 
 class TranslatorPanel extends Diagnostics implements IBarPanel
 {
-	/** @var Resolver[] */
+	/** @var LocaleResolver[] */
 	private array $resolvers = [];
 
 	/** @var string[] */
@@ -35,7 +35,7 @@ class TranslatorPanel extends Diagnostics implements IBarPanel
 	 * @api
 	 * @param string[] $languages
 	 */
-	public function setResolvers(array $languages, Resolver ...$resolvers): void
+	public function setResolvers(array $languages, LocaleResolver ...$resolvers): void
 	{
 		$this->languages = $languages;
 		$this->resolvers = $resolvers;

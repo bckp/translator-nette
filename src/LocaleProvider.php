@@ -14,12 +14,12 @@ declare(strict_types=1);
 
 namespace Bckp\Translator\Nette;
 
-use Bckp\Translator\Nette\Resolvers\Resolver;
+use Bckp\Translator\Nette\Resolvers\LocaleResolver;
 
 final class LocaleProvider
 {
 	/**
-	 * @var Resolver[]
+	 * @var LocaleResolver[]
 	 */
 	private readonly array $resolvers;
 
@@ -31,7 +31,7 @@ final class LocaleProvider
 	 */
 	public function __construct(
 		public readonly array $allowed,
-		Resolver ...$resolvers
+		LocaleResolver ...$resolvers
 	) {
 		$this->resolvers = $resolvers;
 	}

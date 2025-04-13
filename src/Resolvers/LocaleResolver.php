@@ -14,20 +14,14 @@ declare(strict_types=1);
 
 namespace Bckp\Translator\Nette\Resolvers;
 
-use Nette\Http\Request;
-
 /**
  * @api
  */
-final readonly class HeaderResolver implements Resolver
+interface LocaleResolver
 {
-	public function __construct(
-		private Request $httpRequest
-	) {}
-
-	#[\Override]
-	public function resolve(array $allowed): ?string
-	{
-		return $this->httpRequest->detectLanguage($allowed);
-	}
+	/**
+	 * @api
+	 * @param string[] $allowed
+	 */
+	public function resolve(array $allowed): ?string;
 }

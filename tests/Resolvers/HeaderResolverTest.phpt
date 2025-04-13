@@ -6,7 +6,7 @@ namespace Bckp\Translator\Nette\Tests\Resolvers;
 
 require __DIR__ . '/../bootstrap.php';
 
-use Bckp\Translator\Nette\Resolvers\HeaderResolver;
+use Bckp\Translator\Nette\Resolvers\HeaderLocaleResolver;
 use Mockery;
 use Nette\Http\Request;
 use Tester\Assert;
@@ -22,7 +22,7 @@ class HeaderResolverTest extends TestCase
 		            ->with(['en', 'cs', 'de'])
 		            ->andReturn('cs');
 
-		$resolver = new HeaderResolver($httpRequest);
+		$resolver = new HeaderLocaleResolver($httpRequest);
 
 		$result = $resolver->resolve(['en', 'cs', 'de']);
 		Assert::same('cs', $result);
@@ -36,7 +36,7 @@ class HeaderResolverTest extends TestCase
 		            ->with(['en', 'cs', 'de'])
 		            ->andReturn(null);
 
-		$resolver = new HeaderResolver($httpRequest);
+		$resolver = new HeaderLocaleResolver($httpRequest);
 
 		$result = $resolver->resolve(['en', 'cs', 'de']);
 		Assert::null($result);
@@ -50,7 +50,7 @@ class HeaderResolverTest extends TestCase
 		            ->with([])
 		            ->andReturn(null);
 
-		$resolver = new HeaderResolver($httpRequest);
+		$resolver = new HeaderLocaleResolver($httpRequest);
 
 		$result = $resolver->resolve([]);
 		Assert::null($result);

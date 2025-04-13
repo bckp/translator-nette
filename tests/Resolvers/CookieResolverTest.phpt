@@ -6,7 +6,7 @@ namespace Bckp\Translator\Nette\Tests\Resolvers;
 
 require __DIR__ . '/../bootstrap.php';
 
-use Bckp\Translator\Nette\Resolvers\CookieResolver;
+use Bckp\Translator\Nette\Resolvers\CookieLocaleResolver;
 use Mockery;
 use Nette\Http\Request;
 use Nette\Http\Response;
@@ -27,7 +27,7 @@ class CookieResolverTest extends TestCase
 
 		$httpResponse = Mockery::mock(Response::class);
 
-		$resolver = new CookieResolver(self::CookieName, $httpRequest, $httpResponse);
+		$resolver = new CookieLocaleResolver(self::CookieName, $httpRequest, $httpResponse);
 
 		$result = $resolver->resolve(['en', 'cs', 'de']);
 		Assert::same('cs', $result);
@@ -43,7 +43,7 @@ class CookieResolverTest extends TestCase
 
 		$httpResponse = Mockery::mock(Response::class);
 
-		$resolver = new CookieResolver(self::CookieName, $httpRequest, $httpResponse);
+		$resolver = new CookieLocaleResolver(self::CookieName, $httpRequest, $httpResponse);
 
 		$result = $resolver->resolve(['en', 'cs', 'de']);
 		Assert::null($result);
@@ -58,7 +58,7 @@ class CookieResolverTest extends TestCase
 		             ->with(self::CookieName, 'cs', null)
 		             ->andReturnSelf();
 
-		$resolver = new CookieResolver(self::CookieName, $httpRequest, $httpResponse);
+		$resolver = new CookieLocaleResolver(self::CookieName, $httpRequest, $httpResponse);
 
 		$result = $resolver->set('cs');
 		Assert::true($result);
@@ -73,7 +73,7 @@ class CookieResolverTest extends TestCase
 		             ->with(self::CookieName, 'cs', null)
 		             ->andThrow(new \Exception('Cookie setting failed'));
 
-		$resolver = new CookieResolver(self::CookieName, $httpRequest, $httpResponse);
+		$resolver = new CookieLocaleResolver(self::CookieName, $httpRequest, $httpResponse);
 
 		$result = $resolver->set('cs');
 		Assert::false($result);
