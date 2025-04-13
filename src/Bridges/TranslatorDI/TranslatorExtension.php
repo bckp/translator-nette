@@ -31,14 +31,13 @@ use Nette\Localization\Translator;
 use Nette\Schema\Context;
 use Nette\Schema\Expect;
 use Nette\Schema\Schema;
-use Nette\Utils\FileSystem;
 use Nette\Utils\Finder;
 
 /**
  * @api
- * @method object{languages: string[], resolvers: Resolver[], pluralProvider: class-string, paths: string[], debugger: bool, injectLatte: bool } getConfig()
+ * @method object{languages: string[], resolvers: LocaleResolver[], pluralProvider: class-string, paths: string[], debugger: bool, injectLatte: bool } getConfig()
  */
-class TranslatorExtension extends CompilerExtension
+final class TranslatorExtension extends CompilerExtension
 {
 	public function __construct(
 		private readonly string $tempDir

@@ -20,7 +20,7 @@ use Throwable;
 /**
  * @api
  */
-readonly class CookieLocaleResolver implements LocaleResolver
+final readonly class CookieLocaleResolver implements LocaleResolver
 {
 	public function __construct(
 		protected string $parameterName,

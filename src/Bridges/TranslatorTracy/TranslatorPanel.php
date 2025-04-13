@@ -23,7 +23,7 @@ use Nette\Utils\Helpers;
 use function count;
 use function strtoupper;
 
-class TranslatorPanel extends Diagnostics implements IBarPanel
+final class TranslatorPanel extends Diagnostics implements IBarPanel
 {
 	/** @var LocaleResolver[] */
 	private array $resolvers = [];
