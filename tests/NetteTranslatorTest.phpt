@@ -6,82 +6,40 @@ namespace Bckp\Translator\Nette\Tests;
 
 require __DIR__ . '/bootstrap.php';
 
+use Bckp\Translator\Translator;
 use Bckp\Translator\Nette\LocaleProvider;
-use Bckp\Translator\Nette\Resolvers\LocaleResolver;
+use Bckp\Translator\Nette\NetteTranslator;
+use Bckp\Translator\Nette\TranslatorProvider;
 use Mockery;
 use Tester\Assert;
 use Tester\TestCase;
 
-class LocaleProviderTest extends TestCase
+class NetteTranslatorTest extends TestCase
 {
-	public function testResolveWithSingleResolver(): void
+	public function testNetteTranslatorTest(): void
 	{
-		$resolver = Mockery::mock(LocaleResolver::class);
-		$resolver->shouldReceive('resolve')
-		         ->once()
-		         ->with(['en', 'cs', 'de'])
-		         ->andReturn('cs');
+		$translatorProvider = Mockery::mock(TranslatorProvider::class);
+		$localeProvider = Mockery::mock(LocaleProvider::class);
+		$translatorMock = Mockery::mock(Translator::class);
 
-		$provider = new LocaleProvider(['en', 'cs', 'de'], $resolver);
+		$translator = new NetteTranslator($translatorProvider, $localeProvider);
 
-		$result = $provider->resolve();
-		Assert::same('cs', $result);
+		$translatorProvider->shouldReceive('getTranslator')->with('cs')->andReturn($translatorMock);
+		$localeProvider->shouldReceive('resolve')->andReturn('cs');
 
-		// Druhé volání by mělo vrátit cachovanou hodnotu bez opětovného volání resolveru
-		$result2 = $provider->resolve();
-		Assert::same('cs', $result2);
-	}
+		$translatorMock->shouldReceive('translate')->withArgs(function($message, ...$args) {
+			Assert::same('test.to.translate', $message);
+			Assert::same([
+				0 => 'text',
+				1 => '',
+				2 => 1,
+				3 => 1.1
+			], $args);
 
-	public function testResolveWithMultipleResolvers(): void
-	{
-		$resolver1 = Mockery::mock(LocaleResolver::class);
-		$resolver1->shouldReceive('resolve')
-		          ->once()
-		          ->with(['en', 'cs', 'de'])
-		          ->andReturn(null);
+			return true;
+		})->andReturn('ok');
 
-		$resolver2 = Mockery::mock(LocaleResolver::class);
-		$resolver2->shouldReceive('resolve')
-		          ->once()
-		          ->with(['en', 'cs', 'de'])
-		          ->andReturn('de');
-
-		$resolver3 = Mockery::mock(LocaleResolver::class);
-		$resolver3->shouldReceive('resolve')
-		          ->never();
-
-		$provider = new LocaleProvider(['en', 'cs', 'de'], $resolver1, $resolver2, $resolver3);
-
-		$result = $provider->resolve();
-		Assert::same('de', $result);
-	}
-
-	public function testResolveWithNoValidResolvers(): void
-	{
-		$resolver1 = Mockery::mock(LocaleResolver::class);
-		$resolver1->shouldReceive('resolve')
-		          ->once()
-		          ->with(['en', 'cs', 'de'])
-		          ->andReturn(null);
-
-		$resolver2 = Mockery::mock(LocaleResolver::class);
-		$resolver2->shouldReceive('resolve')
-		          ->once()
-		          ->with(['en', 'cs', 'de'])
-		          ->andReturn(null);
-
-		$provider = new LocaleProvider(['en', 'cs', 'de'], $resolver1, $resolver2);
-
-		$result = $provider->resolve();
-		Assert::same('en', $result); // Vrátí první povolenou lokalizaci
-	}
-
-	public function testResolveWithNoResolvers(): void
-	{
-		$provider = new LocaleProvider(['en', 'cs', 'de']);
-
-		$result = $provider->resolve();
-		Assert::same('en', $result); // Vrátí první povolenou lokalizaci
+		Assert::same('ok', $translator->translate('test.to.translate', 'text', null, 1, 1.1));
 	}
 
 	protected function tearDown(): void
@@ -91,4 +49,4 @@ class LocaleProviderTest extends TestCase
 }
 
 // Spuštění testu
-(new LocaleProviderTest())->run();
+(new NetteTranslatorTest())->run();

@@ -17,6 +17,8 @@ namespace Bckp\Translator\Nette;
 use Bckp\Translator\Translator;
 use Nette\Localization;
 
+use function array_walk;
+
 class NetteTranslator implements Localization\Translator
 {
 	private Translator $translator;
@@ -41,6 +43,8 @@ class NetteTranslator implements Localization\Translator
 	#[\Override]
 	public function translate(\Stringable|string $message, mixed ...$parameters): string
 	{
+		// Normalize nette to bckp/translator parameters
+		array_walk($parameters, static fn(&$value): string|float|int => $value = is_int($value) || is_float($value) ? $value : (string) $value);
 		return $this->getTranslator()->translate($message, ...$parameters);
 	}
 
