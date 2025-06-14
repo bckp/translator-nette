@@ -36,7 +36,7 @@ final class TranslatorProvider
 
 	/** @api */
 	public function __construct(
-		private readonly ?Diagnostics $diagnostics,
+		private readonly ?Diagnostics $diagnostics = null,
 	) {}
 
 	/**
