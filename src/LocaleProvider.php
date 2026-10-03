@@ -2,58 +2,65 @@
 
 declare(strict_types=1);
 
-/**
- * Nette extension for bckp/translator
- * (c) Radovan Kepák
- *
- * For the full copyright and license information, please view the file license.md that was distributed with this source code.
- *
- * @author Radovan Kepak <radovan@kepak.dev>
- *  --------------------------------------------------------------------------
- */
-
 namespace Bckp\Translator\Nette;
 
+use Bckp\Translator\Locale;
 use Bckp\Translator\Nette\Resolvers\LocaleResolver;
+use Bckp\Translator\StringList;
+use InvalidArgumentException;
+use stdClass;
 
 final class LocaleProvider
 {
-	/**
-	 * @var LocaleResolver[]
-	 */
-	private readonly array $resolvers;
+	private readonly StringList $allowed;
 
-	private string $locale;
+	private stdClass $resolvers;
 
-	/**
-	 * @param string[] $allowed
-	 * @api
-	 */
-	public function __construct(
-		public readonly array $allowed,
-		LocaleResolver ...$resolvers
-	) {
-		$this->resolvers = $resolvers;
+	private ?string $locale = null;
+
+	public function __construct(StringList $allowed, LocaleResolver ...$resolvers)
+	{
+		$this->allowed = new StringList();
+		$allowed->each(function (string $locale): void {
+			$this->allowed->add(Locale::normalize($locale));
+		});
+
+		if ($this->allowed->isEmpty()) {
+			throw new InvalidArgumentException('At least one locale must be configured.');
+		}
+		$this->resolvers = new stdClass();
+		foreach ($resolvers as $index => $resolver) {
+			$this->resolvers->{(string) $index} = $resolver;
+		}
 	}
 
-	/**
-	 * @api
-	 */
 	public function resolve(): string
 	{
-		/** @psalm-suppress RedundantPropertyInitializationCheck */
-		return $this->locale ??= $this->getLocale();
-	}
+		if ($this->locale !== null) {
+			return $this->locale;
+		}
+		foreach (get_object_vars($this->resolvers) as $resolver) {
+			if (!$resolver instanceof LocaleResolver) {
+				continue;
+			}
+			$locale = $resolver->resolve(clone $this->allowed);
 
-	private function getLocale(): string
-	{
-		foreach ($this->resolvers as $resolver) {
-			$locale = $resolver->resolve($this->allowed);
-			if ($locale !== null) {
-				return $locale;
+			if ($locale === null) {
+				continue;
+			}
+
+			try {
+				$locale = Locale::normalize($locale);
+			} catch (InvalidArgumentException) {
+				continue;
+			}
+
+			if ($this->allowed->contains($locale)) {
+				return $this->locale = $locale;
 			}
 		}
 
-		return $this->allowed[0];
+		return $this->locale = $this->allowed->first()
+			?? throw new InvalidArgumentException('No locales are available.');
 	}
 }

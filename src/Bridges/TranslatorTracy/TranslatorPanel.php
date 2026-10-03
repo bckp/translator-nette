@@ -2,76 +2,57 @@
 
 declare(strict_types=1);
 
-/**
- * Nette extension for bckp/translator
- * (c) Radovan Kepák
- *
- * For the full copyright and license information, please view the file license.md that was distributed with this source code.
- *
- * @author Radovan Kepak <radovan@kepak.dev>
- *  --------------------------------------------------------------------------
- */
-
 namespace Bckp\Translator\Nette\Diagnostics;
 
+use Bckp\Translator\CatalogueStatus;
 use Bckp\Translator\Diagnostics\Diagnostics;
-use Bckp\Translator\Nette\Resolvers\LocaleResolver;
-use Psalm\Issue\UnusedVariable;
+use Bckp\Translator\SourceVersion;
+use Bckp\Translator\StringList;
+use Tracy\Helpers;
 use Tracy\IBarPanel;
-use Nette\Utils\Helpers;
-
-use function count;
-use function strtoupper;
 
 final class TranslatorPanel extends Diagnostics implements IBarPanel
 {
-	/** @var LocaleResolver[] */
-	private array $resolvers = [];
+	private ?StringList $languages = null;
 
-	/** @var string[] */
-	private array $languages = [];
-
-	/**
-	 * @api
-	 * @param string[] $languages
-	 */
-	public function setResolvers(array $languages, LocaleResolver ...$resolvers): void
+	public function setLanguages(StringList $languages): void
 	{
-		$this->languages = $languages;
-		$this->resolvers = $resolvers;
+		$this->languages = clone $languages;
 	}
 
 	#[\Override]
 	public function getTab(): string
 	{
-		/** @psalm-suppress UnusedVariable */
-		return Helpers::capture(function () {
-			$color = !empty($this->getWarnings()) || !empty($this->getUntranslated()) ? 'B71C1C' : '009688';
-			$locale = strtoupper($this->getLocale());
+		$color = $this->getWarnings()->isEmpty() && $this->getUntranslated()->isEmpty() ? '#009688' : '#B71C1C';
 
-			require __DIR__ . '/dist/tab.phtml';
-		});
+		return '<span title="Translator" style="color:' . $color . '">Translator '
+			. Helpers::escapeHtml(strtoupper($this->getLocale())) . '</span>';
 	}
 
 	#[\Override]
 	public function getPanel(): string
 	{
-		/** @psalm-suppress UnusedVariable */
-		return Helpers::capture(function () {
-			$locale = strtoupper($this->getLocale());
-
-			$errors = $this->getWarnings();
-			$countErrors = count($errors);
-			$hasErrors = $countErrors > 0;
-
-			$untranslated = $this->getUntranslated();
-			$countUntranslated = count($untranslated);
-			$hasUntranslated = $countUntranslated > 0;
-
-			$resolvers = $this->resolvers;
-			$languages = $this->languages;
-
-			require __DIR__ . '/dist/panel.phtml';
+		$html = '<h1>Translator</h1><div class="tracy-inner"><p>Locale: '
+			. Helpers::escapeHtml($this->getLocale()) . '; allowed: '
+			. Helpers::escapeHtml($this->languages?->join(', ') ?? '') . '</p>';
+		$html .= '<h2>Catalogues</h2><table><tr><th>Locale</th><th>Checked</th><th>Recompiled</th><th>Versions</th></tr>';
+		$this->eachCatalogue(static function (CatalogueStatus $status) use (&$html): void {
+			$html .= '<tr><td>' . Helpers::escapeHtml($status->catalogue->locale) . '</td><td>'
+				. ($status->checked ? 'yes' : 'no') . '</td><td>' . ($status->recompiled ? 'yes' : 'no') . '</td><td>';
+			$status->catalogue->versions->each(static function (SourceVersion $version) use (&$html): void {
+				$html .= Helpers::escapeHtml($version->id) . ': ' . Helpers::escapeHtml($version->version) . '<br>';
+			});
+			$html .= '</td></tr>';
 		});
+		$html .= '</table><h2>Warnings</h2><ul>';
+		$this->getWarnings()->each(static function (string $warning) use (&$html): void {
+			$html .= '<li>' . Helpers::escapeHtml($warning) . '</li>';
+		});
+		$html .= '</ul><h2>Untranslated</h2><ul>';
+		$this->getUntranslated()->each(static function (string $message) use (&$html): void {
+			$html .= '<li>' . Helpers::escapeHtml($message) . '</li>';
+		});
+
+		return $html . '</ul></div>';
 	}
 }

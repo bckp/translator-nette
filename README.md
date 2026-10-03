@@ -1,120 +1,173 @@
-Bckp\Translator
-====================
+# Bckp Translator for Nette 3.0
 
-[![Downloads this Month](https://img.shields.io/packagist/dm/bckp/translator-nette.svg)](https://packagist.org/packages/bckp/translator-nette)
-[![Tests](https://github.com/bckp/translator-nette/actions/workflows/tests.yaml/badge.svg)](https://github.com/bckp/translator-nette/actions/workflows/tests.yaml)
-[![Coverage Status](https://coveralls.io/repos/github/bckp/translator-nette/badge.svg?branch=main)](https://coveralls.io/github/bckp/translator-nette?branch=main)
-[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/bckp/translator-nette/badges/quality-score.png?b=main)](https://scrutinizer-ci.com/g/bckp/translator-nette/?branch=main)
-[![Latest Stable Version](https://poser.pugx.org/bckp/translator-nette/v/stable)](https://packagist.org/packages/bckp/translator-nette)
-[![License](https://img.shields.io/badge/license-New%20BSD-blue.svg)](https://github.com/nette/application/blob/master/license.md)
+Nette integration for the versioned, typed translator core. Requires PHP 8.2+, Nette 3.2 and core 3.x. Latte and Tracy are optional.
 
-Simple and fast PHP translator
+This is the `nextgen` development branch and requires the matching core branch. During development, clone `translator-core` and `translator-nette` as sibling directories and run Composer in both. The adapter's path repositories link the core and its plugins locally.
 
-Usage
------
-
-The best way to install bckp/translator-nette is using [Composer](http://getcomposer.org/):
 ```sh
-$ composer require bckp/translator-nette
+cd translator-core
+COMPOSER_ROOT_VERSION=3.0.x-dev composer install
+cd ../translator-nette
+composer install
+composer tests
+composer phpstan
+composer phpcs
 ```
 
-Configuration
------
+The NEON and PHP-cache plugins live in the core repository's `packages` directory. The adapter requires the PHP-cache plugin; NEON is an optional source plugin and a development dependency.
 
-In you nette config, add extension with temporary dir
+## Configuration
+
 ```neon
 extensions:
-	translator: Bckp\Translator\Nette\Bridges\TranslatorExtension(%tempDir%/translator)
+    translator: Bckp\Translator\Nette\Bridges\TranslatorDI\TranslatorExtension(%tempDir%/translator)
+
+translator:
+    languages: [cs, en]
+    sources:
+        files: Bckp\Translator\Neon\NeonSource(%appDir%/Locale)
+        database: @applicationTranslations
+
+    checkProbability: 0.01
+    injectLatte: true
+    resolvers:
+        - Bckp\Translator\Nette\Resolvers\CookieLocaleResolver(locale)
+        - Bckp\Translator\Nette\Resolvers\HeaderLocaleResolver()
 ```
-and set translator itself
+
+Omit `database` if only file translations are needed. An application source service must implement `Bckp\Translator\Interfaces\TranslationSource` and return `MessageCatalogue` plus a mandatory string version. Named source IDs form part of cache identity; later sources override earlier messages.
+
+`debugMode` inherits the application's `%debugMode%` parameter. Debug mode checks every initialized locale once per request, regardless of probability. `debugger` defaults to the resolved debug mode and controls the Tracy panel independently:
+
 ```neon
 translator:
-	languages:
-		- cs #Language codes
-	path:
-		- %appDir%/Locale # Where to search for language file
-	pluralProvider: Bckp\Translator\PluralProvider # Optional - default is PluralProvider from bckp/translator-core
-	debugger: %debugMode% # Optional - default is %debugMode%
-	injectLatte: true # Optional - default is true, this will autoregister translator into latte
-	resolvers:
-	    - Bckp\Translator\Nette\Resolvers\HeaderLocaleResolver() # Any class implements Resolver, will be used to resolve language, if more then one used, extension will cyclu thru all of them to find first that can be used
+    languages: [cs, en]
+    sources:
+        files: Bckp\Translator\Neon\NeonSource(%appDir%/Locale)
+    debugMode: false
+    debugger: true
+    checkProbability: 0.01
 ```
 
-Translator will find all files in path and make map to the DI. If debugger is on, it will on each request check, if any file is modified and rebuild all language file (only needed ones).
+Missing cache is always built. A warm production catalogue checks source versions with the configured probability once on first use. With an unchanged version it keeps the compiled data. A skipped check instantiates no source and loads no source data. Individual translations never check versions or sample probability.
 
-Naming convention
------
+DI compilation does not scan translation directories. Only the requested locale is initialized. Source services are created lazily when a version or data is actually needed; constructors should avoid IO.
 
-All language files should be in Neon format, and proper naming is: {module}.{langCode}.neon
+Optional `storage` accepts a DI factory or a service reference implementing `CatalogueStorage`. The default is `PhpCatalogueStorage` in the directory passed to the extension. `pluralProvider` accepts a DI factory or service reference and defaults to the core `PluralProvider`.
 
-Translation file format
------------------------
+## Translation
 
-Translation files are written in NEON format. Plural strings are in ARRAY, otherwise STRING.
-```neon
-welcome: 'Vítejte'
-withArgs: 'Ahoj, já jsem %s, přeji krásné %s'
-withArgsRev: 'Krásné %2$s, já jsem %1$s'
-plural:
-	zero: 'žádný člověk'
-	one: 'jeden člověk'
-	few: '%d lidé'
-	other: '%d lidí'
-next: 'This is next translation'
-```
-
-Translatings
------
-
-For translator to be in Presenter, simply inject it or get in in constructor
+Inject Nette's interface for ordinary translation:
 
 ```php
 <?php
+
+declare(strict_types=1);
+
+use Nette\Application\UI\Presenter;
 use Nette\DI\Attributes\Inject;
+use Nette\Localization\Translator;
 
-class Presenter extends Nette\Application\UI\Presenter {
+final class HomepagePresenter extends Presenter
+{
     #[Inject]
-	public Nette\Localization\Translator $translator;
+    public Translator $translator;
+
+    public function renderDefault(): void
+    {
+        $this->template->welcome = $this->translator->translate('messages.hello', 'Ada');
+    }
 }
 ```
 
-Translating in Presenters
--------------------------
+Latte's translator extension is added automatically when `injectLatte` is enabled and the standard `latte.latteFactory` service exists:
 
-```php
-	$changes = $this->model->doSomeChanges();
-	$this->flashMessage($this->translator->translate('messages.flash.success', $changes));
-	
-	$form->addError($this->translator->translate('messages.error.form.empty'));
+```latte
+<p>{_'messages.hello', 'Ada'}</p>
 ```
 
-If you want do shortcut, you can define own translate method, like this
+Messages use `sprintf` formatting. Core parameters are strictly `string|int|float`. The Nette adapter accepts scalar values, null and `Stringable` objects as required by Nette's interface and converts them appropriately; arrays and other objects throw.
+
+## Manual recompilation
+
+Inject the adapter's extended interface to refresh after editing translations:
+
 ```php
-class Presenter extends Nette\Application\UI\Presenter {
-	#[Inject]
-	public Nette\Localization\Translator $translator;
+<?php
 
-	public function translate($message, ...$params){
-		$this->translator->translate($message, ...$params);
-	}
+declare(strict_types=1);
 
-	public function renderTest(){
-		$message = $this->translate('messages.test');
-	}
+use Bckp\Translator\Nette\Interfaces\Translator;
+
+final class TranslationRefresh
+{
+    public function __construct(private readonly Translator $translator) {}
+
+    public function refresh(): void
+    {
+        $this->translator->forceRecompile();
+    }
+
+    public function refreshLocale(string $locale): void
+    {
+        $this->translator->forceRecompile($locale);
+    }
 }
 ```
 
-Translating in Templates
-------------------------
+`forceRecompile()` reloads all sources for the current locale even if their versions are identical. Passing a locale refreshes that locale without switching the current request's language.
 
-If you set injectLatte to true, translator will autoregister itself to Latte, so you can use it in templates
+`TranslatorProvider::forceRecompile($locale)` provides the same operation when working directly with the provider. The provider updates its existing core translator object, so existing Nette, Latte, form and core-translator references immediately see the replacement. A failed load leaves those references on their previous catalogue.
 
-```html
-	<div>{_'messages.test'}</div>
+In long-running workers, create a fresh container/provider scope per job or explicitly force a refresh. The probabilistic decision is made at catalogue initialization, not on every translation in a persistent process.
+
+## Locale resolution
+
+`languages` is required and must contain at least one locale. Locales are normalized to lowercase with hyphens: `CS_CZ` becomes `cs-cz`.
+
+Resolvers are tried in configuration order. Invalid or unsupported results are skipped; the first configured locale is the fallback. The chosen locale is held for the provider's lifetime.
+
+Custom resolvers implement this native contract:
+
+```php
+interface LocaleResolver
+{
+    public function resolve(\Bckp\Translator\StringList $allowed): ?string;
+}
 ```
 
-Every parameter you pass to the translate will be passed into sprintf in Bckp\Translator internally, so you can add order in neon translation format.
+The built-in cookie resolver uses the `locale` cookie; the header resolver uses Nette's `Accept-Language` detection. Resolvers receive a copy of the typed allowed-language list.
 
-See (https://latte.nette.org/en/tags#toc-translation) for more informations about how to translate
+## NEON source
 
-See (https://github.com/bckp/translator-core) for more informations about Bckp\Translate-core
+Files follow `{resource}.{locale}.neon`. For `messages.cs.neon`:
+
+```neon
+hello: 'Ahoj %s'
+people:
+    zero: 'žádný člověk'
+    one: '%d člověk'
+    few: '%d lidé'
+    other: '%d lidí'
+counter: '0'
+hidden: ''
+```
+
+Keys become `messages.hello` and `messages.people`. Values must be strings or known plural variants containing strings. Quote numeric and boolean text. The plugin's automatic version hashes contents and the file set, so changes with identical modification times are detected.
+
+For immutable release files, pass a fixed version:
+
+```neon
+sources:
+    files: Bckp\Translator\Neon\NeonSource(%appDir%/Locale, release-42)
+```
+
+Update that string on release or force a rebuild when its files change.
+
+## Tracy and migration
+
+The Tracy panel shows used catalogues, their stored versions, whether they were checked/recompiled, untranslated messages and plural warnings. Rendering the panel does not trigger version checks or source loading.
+
+The 3.0 adapter replaces `path` with the named `sources` map and uses typed factories and `StringList` resolver inputs. Upgrade it together with core 3.x. See the core's `MIGRATION.md` for the removed 2.x file, array and event API.
+
+PHPStan level 8 and integration tests run against real Nette DI containers, Latte engines and HTTP resolvers. Source code uses strict native types and no docblocks.
