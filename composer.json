@@ -14,7 +14,7 @@
         }
     ],
     "require": {
-        "php": "^8.2",
+        "php": "^8.4",
         "bckp/translator-core": "^3.0",
         "bckp/translator-php-cache": "^1.0",
         "nette/di": "^3.2",
@@ -47,7 +47,7 @@
         "tracy/tracy": "^2.9",
         "latte/latte": "^3.0",
         "nette/tester": "^2.5",
-        "friendsofphp/php-cs-fixer": "^3.75",
+        "friendsofphp/php-cs-fixer": "^3.95",
         "vimeo/psalm": "^6.5",
         "bckp/translator-neon": "^1.0"
     },

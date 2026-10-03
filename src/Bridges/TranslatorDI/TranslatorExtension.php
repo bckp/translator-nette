@@ -35,9 +35,7 @@ use Tracy\IBarPanel;
 
 final class TranslatorExtension extends CompilerExtension
 {
-	public function __construct(private readonly string $tempDir)
-	{
-	}
+	public function __construct(private readonly string $tempDir) {}
 
 	#[\Override]
 	public function getConfig(): TranslatorConfig

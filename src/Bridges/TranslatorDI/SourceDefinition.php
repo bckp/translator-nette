@@ -8,7 +8,5 @@ use Nette\DI\Definitions\Statement;
 
 final readonly class SourceDefinition
 {
-	public function __construct(public string $id, public string|Statement $factory)
-	{
-	}
+	public function __construct(public string $id, public string|Statement $factory) {}
 }

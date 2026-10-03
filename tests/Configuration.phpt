@@ -18,10 +18,10 @@ use Tester\Assert;
 
 $extension = new TranslatorExtension(TEMP_DIR . '/cache');
 $schema = $extension->getConfigSchema();
-Assert::exception(static fn() => (new Processor())->process($schema, ['languages' => [], 'debugMode' => false, 'debugger' => false]), ValidationException::class);
-Assert::exception(static fn() => (new Processor())->process($schema, ['languages' => ['cs'], 'checkProbability' => -0.1, 'debugMode' => false, 'debugger' => false]), ValidationException::class);
-Assert::exception(static fn() => (new Processor())->process($schema, ['languages' => ['cs'], 'checkProbability' => NAN]), ValidationException::class);
-$config = (new Processor())->process($schema, ['languages' => ['CS_CZ', 'cs-cz'], 'debugMode' => false, 'debugger' => false]);
+Assert::exception(static fn() => new Processor()->process($schema, ['languages' => [], 'debugMode' => false, 'debugger' => false]), ValidationException::class);
+Assert::exception(static fn() => new Processor()->process($schema, ['languages' => ['cs'], 'checkProbability' => -0.1, 'debugMode' => false, 'debugger' => false]), ValidationException::class);
+Assert::exception(static fn() => new Processor()->process($schema, ['languages' => ['cs'], 'checkProbability' => NAN]), ValidationException::class);
+$config = new Processor()->process($schema, ['languages' => ['CS_CZ', 'cs-cz'], 'debugMode' => false, 'debugger' => false]);
 Assert::same('cs-cz', $config->languages->first());
 Assert::same(1, $config->languages->count());
 

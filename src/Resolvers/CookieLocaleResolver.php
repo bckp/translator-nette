@@ -17,8 +17,7 @@ final readonly class CookieLocaleResolver implements LocaleResolver
 		private string $parameterName,
 		private Request $httpRequest,
 		private Response $httpResponse,
-	) {
-	}
+	) {}
 
 	#[\Override]
 	public function resolve(StringList $allowed): ?string

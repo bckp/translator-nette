@@ -58,7 +58,7 @@ final class CountingSource implements TranslationSource
 			throw new RuntimeException('Source failed.');
 		}
 
-		return (new MessageCatalogue())->add('messages.hello', self::$text . '-' . $locale)
+		return new MessageCatalogue()->add('messages.hello', self::$text . '-' . $locale)
 			->add('messages.parameters', '%s|%s|%s')
 			->add('messages.number', '%d');
 	}

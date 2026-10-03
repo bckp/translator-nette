@@ -16,8 +16,7 @@ final class NetteTranslator implements Interfaces\Translator
 	public function __construct(
 		private readonly TranslatorProvider $translatorProvider,
 		private readonly LocaleProvider $localeProvider,
-	) {
-	}
+	) {}
 
 	#[\Override]
 	public function getLocale(): string

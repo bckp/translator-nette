@@ -12,9 +12,7 @@ final class LazyTranslationSource implements TranslationSource
 {
 	private ?TranslationSource $source = null;
 
-	public function __construct(private readonly TranslationSourceFactory $factory)
-	{
-	}
+	public function __construct(private readonly TranslationSourceFactory $factory) {}
 
 	#[\Override]
 	public function getVersion(string $locale): string

@@ -18,12 +18,12 @@ $request = new Request(new UrlScript('https://example.test/'), cookies: ['lang' 
 $cookie = new CookieLocaleResolver('lang', $request, new Response());
 $allowed = new StringList('en', 'cs');
 Assert::null($cookie->resolve($allowed));
-Assert::same('cs', (new LocaleProvider($allowed, $cookie, new HeaderLocaleResolver($request)))->resolve());
+Assert::same('cs', new LocaleProvider($allowed, $cookie, new HeaderLocaleResolver($request))->resolve());
 $request = new Request(new UrlScript('https://example.test/'), cookies: ['lang' => 'CS_CZ']);
-Assert::same('cs-cz', (new CookieLocaleResolver('lang', $request, new Response()))->resolve(new StringList('cs-cz')));
+Assert::same('cs-cz', new CookieLocaleResolver('lang', $request, new Response())->resolve(new StringList('cs-cz')));
 $request = new Request(new UrlScript('https://example.test/'), cookies: ['lang' => '../invalid']);
-Assert::null((new CookieLocaleResolver('lang', $request, new Response()))->resolve($allowed));
-Assert::same('en', (new LocaleProvider($allowed))->resolve());
+Assert::null(new CookieLocaleResolver('lang', $request, new Response())->resolve($allowed));
+Assert::same('en', new LocaleProvider($allowed)->resolve());
 Assert::exception(static fn() => new LocaleProvider(new StringList()), InvalidArgumentException::class);
 $resolver = new class implements LocaleResolver {
 	public int $calls = 0;

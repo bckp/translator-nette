@@ -1,6 +1,6 @@
 # Bckp Translator for Nette 3.0
 
-Nette integration for the versioned, typed translator core. Requires PHP 8.2+, Nette 3.2 and core 3.x. Latte and Tracy are optional.
+Nette integration for the versioned, typed translator core. Requires PHP 8.4+, Nette 3.2 and core 3.x. Latte and Tracy are optional.
 
 This is the `nextgen` development branch and requires the matching core branch. During development, clone `translator-core` and `translator-nette` as sibling directories and run Composer in both. The adapter's path repositories link the core and its plugins locally.
 
@@ -170,4 +170,4 @@ The Tracy panel shows used catalogues, their stored versions, whether they were 
 
 The 3.0 adapter replaces `path` with the named `sources` map and uses typed factories and `StringList` resolver inputs. Upgrade it together with core 3.x. See the core's `MIGRATION.md` for the removed 2.x file, array and event API.
 
-PHPStan level 8 and integration tests run against real Nette DI containers, Latte engines and HTTP resolvers. Source code uses strict native types and no docblocks.
+PHPStan level 8 and integration tests run against real Nette DI containers, Latte engines and HTTP resolvers. Source code uses strict native types and no docblocks. PHP CS Fixer uses the PER Coding Style 3.0 preset with tab indentation and PHP 8.4 migration rules. EditorConfig also selects tabs for PHP files.

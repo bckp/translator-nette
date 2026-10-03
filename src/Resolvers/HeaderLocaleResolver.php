@@ -9,9 +9,7 @@ use Nette\Http\Request;
 
 final readonly class HeaderLocaleResolver implements LocaleResolver
 {
-	public function __construct(private Request $httpRequest)
-	{
-	}
+	public function __construct(private Request $httpRequest) {}
 
 	#[\Override]
 	public function resolve(StringList $allowed): ?string
