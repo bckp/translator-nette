@@ -2,7 +2,7 @@
 
 Nette integration for the versioned, typed translator core. Requires PHP 8.4+, Nette 3.2 and core 3.x. Latte and Tracy are optional.
 
-This is the `nextgen` development branch and requires the matching core branch. During development, clone `translator-core` and `translator-nette` as sibling directories and run Composer in both. The adapter's path repositories link the core and its plugins locally.
+This is the `nextgen` development branch and requires the matching core branch. During development, clone `translator-core`, [`translator-neon`](https://github.com/bckp/translator-neon) and `translator-nette` from their `nextgen` branches as sibling directories. The adapter's path repositories link the core and its plugins locally.
 
 ```sh
 cd translator-core
@@ -14,7 +14,7 @@ composer phpstan
 composer phpcs
 ```
 
-The NEON and PHP-cache plugins live in the core repository's `packages` directory. The adapter requires the PHP-cache plugin; NEON is an optional source plugin and a development dependency.
+The PHP-cache plugin lives in the core repository's `packages/php-cache` directory and is required by the adapter. NEON has its own repository; it is an optional source plugin and a development dependency used by the integration tests.
 
 ## Configuration
 

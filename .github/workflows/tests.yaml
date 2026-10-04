@@ -30,6 +30,11 @@ jobs:
           repository: bckp/translator-core
           ref: nextgen
           path: translator-core
+      - uses: actions/checkout@v4
+        with:
+          repository: bckp/translator-neon
+          ref: nextgen
+          path: translator-neon
       - uses: shivammathur/setup-php@v2
         with:
           php-version: '8.4'
@@ -54,6 +59,11 @@ jobs:
           repository: bckp/translator-core
           ref: nextgen
           path: translator-core
+      - uses: actions/checkout@v4
+        with:
+          repository: bckp/translator-neon
+          ref: nextgen
+          path: translator-neon
       - uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php }}
@@ -77,6 +87,11 @@ jobs:
           repository: bckp/translator-core
           ref: nextgen
           path: translator-core
+      - uses: actions/checkout@v4
+        with:
+          repository: bckp/translator-neon
+          ref: nextgen
+          path: translator-neon
       - uses: shivammathur/setup-php@v2
         with:
           php-version: '8.4'
@@ -98,6 +113,11 @@ jobs:
           repository: bckp/translator-core
           ref: nextgen
           path: translator-core
+      - uses: actions/checkout@v4
+        with:
+          repository: bckp/translator-neon
+          ref: nextgen
+          path: translator-neon
       - uses: shivammathur/setup-php@v2
         with:
           php-version: '8.4'

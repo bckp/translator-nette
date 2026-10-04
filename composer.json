@@ -68,8 +68,17 @@
             "options": {
                 "symlink": true,
                 "versions": {
-                    "bckp/translator-neon": "1.0.0",
                     "bckp/translator-php-cache": "1.0.0"
+                }
+            }
+        },
+        {
+            "type": "path",
+            "url": "../translator-neon",
+            "options": {
+                "symlink": true,
+                "versions": {
+                    "bckp/translator-neon": "1.0.0"
                 }
             }
         }
