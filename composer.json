@@ -41,7 +41,7 @@
         "phpcs": "PHP_CS_FIXER_IGNORE_ENV=1 php-cs-fixer check --sequential",
         "phpcs-fix": "PHP_CS_FIXER_IGNORE_ENV=1 php-cs-fixer fix --sequential",
         "bc-install": "composer --working-dir=tools/bc install --no-interaction --no-progress --prefer-dist",
-        "bc-check": "@php tools/check-bc.php 3"
+        "bc-check": "@php tools/check-bc.php 3 --with-dev"
     },
     "require-dev": {
         "roave/security-advisories": "dev-latest",

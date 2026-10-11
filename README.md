@@ -178,7 +178,7 @@ GitHub Actions runs Nette Tester on PHP 8.4 and 8.5, PHPStan level 8, PER 3 with
 
 ### API compatibility
 
-Roave Backward Compatibility Check has isolated dependencies:
+Roave Backward Compatibility Check has isolated dependencies. This adapter includes development dependencies during comparison so that optional Tracy and Latte API types can be resolved:
 
 ```sh
 composer bc-install
