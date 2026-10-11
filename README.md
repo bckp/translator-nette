@@ -171,3 +171,30 @@ The Tracy panel shows used catalogues, their stored versions, whether they were 
 The 3.0 adapter replaces `path` with the named `sources` map and uses typed factories and `StringList` resolver inputs. Upgrade it together with core 3.x. See the core's `MIGRATION.md` for the removed 2.x file, array and event API.
 
 PHPStan level 8 and integration tests run against real Nette DI containers, Latte engines and HTTP resolvers. Source code uses strict native types and no docblocks. PHP CS Fixer uses the PER Coding Style 3.0 preset with tab indentation and PHP 8.4 migration rules. EditorConfig also selects tabs for PHP files.
+
+## Quality tooling
+
+GitHub Actions runs Nette Tester on PHP 8.4 and 8.5, PHPStan level 8, PER 3 with tabs, and `composer audit`. Existing coverage checks remain in place.
+
+### API compatibility
+
+Roave Backward Compatibility Check has isolated dependencies:
+
+```sh
+composer bc-install
+composer bc-check
+```
+
+The check compares committed HEAD against the highest stable `3.x.y` or `v3.x.y` tag. Prereleases and older majors are excluded. Until the first stable 3.x release, it explicitly reports that no baseline exists. CI also compares HEAD with itself to verify the checker and local dependency resolution before that release.
+
+Use `composer bc-check -- <tag-or-commit>` for an explicit baseline. Keep sibling repositories available as described above; they are linked into the checker's temporary directory. Temporary comparisons are stored under the ignored `temp/` directory. Uncommitted changes are not checked.
+
+### Dependency updates
+
+`renovate.json` groups development dependencies and GitHub Actions updates, checks the default branch and `nextgen`, and schedules updates before 07:00 Europe/Prague on Mondays. Automatic merging is disabled. CI validates this configuration using the official Renovate validator.
+
+The hosted Renovate GitHub App must be enabled for the repository. It discovers configuration on the default branch, so this file must also be present there before activation while `nextgen` is a separate development branch.
+
+### Mutation testing
+
+Infection is deferred because it does not directly support Nette Tester. Adoption will be considered together with a possible move to PHPUnit.
