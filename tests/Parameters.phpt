@@ -29,5 +29,8 @@ Assert::same('Hello-cs', $translator->translate($key));
 Assert::same('1||', $translator->translate('messages.parameters', true, false, null));
 Assert::same('text|42|2.5', $translator->translate('messages.parameters', $text, 42, 2.5));
 Assert::same('3', $translator->translate('messages.number', 3));
+Assert::same('3', $translator->translate('messages.number', number: 3));
+Assert::same('text|42|2.5', $translator->translate('messages.parameters', first: $text, second: 42, third: 2.5));
+Assert::same('text|42|2.5', $translator->translate('messages.parameters', ...['first' => $text, 'second' => 42, 'third' => 2.5]));
 Assert::exception(static fn() => $translator->translate('messages.parameters', []), InvalidArgumentException::class);
 Assert::exception(static fn() => $translator->translate('messages.parameters', new stdClass()), InvalidArgumentException::class);
