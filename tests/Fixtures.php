@@ -6,6 +6,7 @@ namespace Bckp\Translator\Nette\Tests;
 
 use Bckp\Translator\Interfaces\TranslationSource;
 use Bckp\Translator\MessageCatalogue;
+use Bckp\Translator\PluralMessage;
 use Bckp\Translator\Nette\Bridges\TranslatorDI\TranslatorExtension;
 use Latte\Engine;
 use Latte\Loaders\StringLoader;
@@ -60,7 +61,8 @@ final class CountingSource implements TranslationSource
 
 		return new MessageCatalogue()->add('messages.hello', self::$text . '-' . $locale)
 			->add('messages.parameters', '%s|%s|%s')
-			->add('messages.number', '%d');
+			->add('messages.number', '%d')
+			->add('messages.options', new PluralMessage(one: 'on'));
 	}
 }
 
