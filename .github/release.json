@@ -1,0 +1,8 @@
+{
+    "tag": "v3.0.0",
+    "name": "Translator for Nette 3.0.0",
+    "checks": [
+        "Tests",
+        "API compatibility"
+    ]
+}

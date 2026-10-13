@@ -1,8 +1,24 @@
 # Bckp Translator for Nette 3.0
 
-Nette integration for the versioned, typed translator core. Requires PHP 8.4+, Nette 3.2 and core 3.x. Latte and Tracy are optional.
+Nette integration for the versioned, typed translator core. Requires PHP 8.4+, Nette 3.2 and `bckp/translator-core >=3.0 <4.0`. Core 4.x is excluded to keep future major API changes out of this adapter release. Latte and Tracy are optional.
 
-This is the `nextgen` development branch and requires the matching core branch. During development, clone `translator-core`, [`translator-neon`](https://github.com/bckp/translator-neon) and `translator-nette` from their `nextgen` branches as sibling directories. The adapter's path repositories link the core and the NEON plugin locally.
+## Installation
+
+```sh
+composer require bckp/translator-nette:^3.0
+```
+
+Composer installs core `>=3.0 <4.0` with its bundled PHP storage. To use file translations, install the optional NEON source:
+
+```sh
+composer require bckp/translator-neon:^1.0
+```
+
+Latte and Tracy remain optional. See the [core migration guide](https://github.com/bckp/translator-core/blob/main/MIGRATION.md) when upgrading from 2.x.
+
+## Development
+
+Clone `translator-core`, [`translator-neon`](https://github.com/bckp/translator-neon) and `translator-nette` as sibling directories from matching branches (`main`, or `nextgen` while preparing a change). The adapter's path repositories link the core and NEON locally:
 
 ```sh
 cd translator-core
@@ -14,7 +30,7 @@ composer phpstan
 composer phpcs
 ```
 
-Compiled PHP storage is included in `bckp/translator-core` under `Bckp\Translator\PhpCache`; the adapter uses it by default and needs no separate PHP-cache package. NEON has its own repository; it is an optional source plugin and a development dependency used by the integration tests.
+Compiled PHP storage is included in `bckp/translator-core` under `Bckp\Translator\PhpCache`; the adapter uses it by default and needs no separate PHP-cache package. NEON has its own repository and is a development dependency used by the integration tests.
 
 ## Configuration
 
@@ -198,3 +214,7 @@ The hosted Renovate GitHub App must be enabled for the repository. It discovers 
 ### Mutation testing
 
 Infection is deferred because it does not directly support Nette Tester. Adoption will be considered together with a possible move to PHPUnit.
+
+## Publishing a release
+
+Commit `.github/release.json` and `docs/releases/<tag>.md` with the requested version. The Release workflow publishes only after the request reaches `main` and Tests plus API compatibility succeed on that commit. It leaves existing tags unchanged.

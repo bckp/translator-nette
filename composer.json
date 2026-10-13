@@ -15,7 +15,7 @@
     ],
     "require": {
         "php": "^8.4",
-        "bckp/translator-core": "^3.0",
+        "bckp/translator-core": ">=3.0 <4.0",
         "nette/di": "^3.2",
         "nette/http": "^3.2",
         "nette/application": "^3.2",
