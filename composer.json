@@ -16,7 +16,6 @@
     "require": {
         "php": "^8.4",
         "bckp/translator-core": "^3.0",
-        "bckp/translator-php-cache": "^1.0",
         "nette/di": "^3.2",
         "nette/http": "^3.2",
         "nette/application": "^3.2",
@@ -66,16 +65,6 @@
         },
         {
             "type": "path",
-            "url": "../translator-core/packages/*",
-            "options": {
-                "symlink": true,
-                "versions": {
-                    "bckp/translator-php-cache": "1.0.0"
-                }
-            }
-        },
-        {
-            "type": "path",
             "url": "../translator-neon",
             "options": {
                 "symlink": true,
@@ -87,7 +76,8 @@
     ],
     "extra": {
         "branch-alias": {
-            "dev-nextgen": "3.0.x-dev"
+            "dev-nextgen": "3.0.x-dev",
+            "dev-main": "3.0.x-dev"
         }
     }
 }
